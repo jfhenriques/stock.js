@@ -1,9 +1,9 @@
 (function() {
 	"use strict";
 
-	var Stock = function (company, owner, shares) {
-		if (!(this instanceof Stock))
-			return new Stock();
+	var StockWallet = function (company, owner, shares) {
+		if (!(this instanceof StockWallet))
+			return new StockWallet();
 
 		this.company = company;
 		this.owner = owner;
@@ -12,31 +12,31 @@
 		this._uncommittedShares = undefined;
 	};
 
-	module.exports = Stock;
+	module.exports = StockWallet;
 
 	//Stock.prototype.setPreTransfer = function(newShareQuantity)
 	//{
 	//	this._uncommittedShares = newShareQuantity;
 	//};
 
-	Stock.prototype.getShares = function()
+	StockWallet.prototype.getShares = function()
 	{
-		return ( this._uncommittedShares == undefined )
+		return ( this._uncommittedShares === undefined )
 					? this._shares
 					: this._uncommittedShares ;
 	};
 
 
-	Stock.prototype._checkUncommittedChanges = function(quantity)
+	StockWallet.prototype._checkUncommittedChanges = function(quantity)
 	{
-		if( this._uncommittedShares == undefined )
+		if( this._uncommittedShares === undefined )
 			this._uncommittedShares = this._shares;
 
 		if( quantity <= 0 )
 			throw new Error("Quantity is not positive");
 	};
 
-	Stock.prototype.takeShares = function(quantity)
+	StockWallet.prototype.takeShares = function(quantity)
 	{
 		this._checkUncommittedChanges(quantity);
 
@@ -46,26 +46,31 @@
 		this._uncommittedShares -= quantity;
 	};
 
-	Stock.prototype.addShares = function(quantity)
+	StockWallet.prototype.addShares = function(quantity)
 	{
 		this._checkUncommittedChanges(quantity);
 
 		this._uncommittedShares += quantity;
 	};
 
-	Stock.prototype.commit = function()
+	StockWallet.prototype.commit = function()
 	{
-		if( this._uncommittedShare != undefined )
+		if( this._uncommittedShare !== undefined )
 		{
 			this._shares = this._uncommittedShares;
 			this._uncommittedShares = undefined;
 		}
 	};
 
-	Stock.prototype.rollback = function()
+	StockWallet.prototype.rollback = function()
 	{
 		this._uncommittedShares = undefined;
 	};
+
+	StockWallet.prototype.getCompany = function()
+	{
+		return this.company;
+	}
 
 
 })();
